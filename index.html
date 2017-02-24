@@ -13,13 +13,17 @@
         #musicList { width: 100%; height: 100%; background: url(img/bg.jpg) no-repeat; background-size: cover;}
         #musicList .list_title { width: 100%; height: 40px; background: rgba(41,171,226,0.6); font-size: 20px; line-height: 40px; text-align: center; color: #fff; position: absolute; top: 0;}
         #musicList .list_tip { width: 16px; height: 16px; background: url(img/tip.png) no-repeat; background-size: cover; position: absolute; right: 15px; top: 12px;}
-        #musicList .list_audio{ width: 100%; height: 65px; background: url(img/list_audioBg.png) repeat-x; position: absolute; bottom: 0;}
+        #musicList .list_content { width: 100%; position: absolute; top: 40px; bottom: 65px;}
+        #musicList .list_content ul { width: 100%; position: absolute; top: 0; left: 0;}
+        #musicList .list_content ul li { width: 100%; height: 60px; background: rgba(26,26,26,0.6); border-bottom: 1px solid #999; box-sizing: border-box;}
+        #musicList .list_content ul li.active { border-left: 5px solid #29abe2;}
+        #musicList .list_audio { width: 100%; height: 65px; background: url(img/list_audioBg.png) repeat-x; position: absolute; bottom: 0;}
         #musicList .list_audioImg { width: 50px; border-radius: 50%; float: left; margin: 7px 0 0 15px;}
         #musicList .list_audioText { float: left;}
         #musicList .list_audioBtn { float: right; width: 32px; height: 32px; background: url(img/list_audioPlay.png) no-repeat; background-size: cover; margin: 16px 15px 0 0; display: none;}
 
-        .title{ color: #fff; font-size: 15px; padding: 10px 0 0 20px;}
-        .name{ color: #b3b3b3; font-size: 13px; padding: 2px 0 0 20px;}
+        .title { color: #fff; font-size: 15px; padding: 10px 0 0 20px;}
+        .name { color: #b3b3b3; font-size: 13px; padding: 2px 0 0 20px;}
     </style>
     <script src="jquery-2.1.3.min.js"></script>
     <script>
@@ -27,17 +31,71 @@
             var viewWidth = $(window).width();
             var viewHeight = $(window).height();
             var desWidth = 640;
+            var touchstart = 'touchstart';
+            var touchmove = 'touchmove';
+            var touchend = 'touchend';
+
             var $main = $('#main');
+            var $listContentUl = $('#listContentUl');
+            var $listTitle = $('#listTitle');
 
             function init() {  //整个项目的初始化
                 device();
+                musicList.init();
             }
 
             function device() {  //兼容PC和移动端
+//                console.log(navigator.userAgent);
+                var isMobile = /Mobile/i.test(navigator.userAgent);
                 if (viewWidth > desWidth) {
                     $main.css('width','640px');
                 }
+                if (!isMobile) {
+                    touchstart = 'mousedown';
+                    touchmove = 'mousemove';
+                    touchend = 'mouseup';
+                }
             }
+
+            var musicList = (function () {  //音乐列表操作
+                var myUrl = 'http://www.shx89.com/';
+                var listUrl = 'musicList.php';
+
+
+                function init() {  //初始
+                    data();
+                    bind();
+                }
+
+                function data() {  //数据
+                    $.ajax({
+                        url : listUrl,
+                        type : 'GET',
+                        dataType : 'json',
+                        success : function (data) {
+                            $.each(data,function (i,obj) {
+                                var $li = '<li><h3 class="title">'+(obj.musicName)+'</h3><p class="name">'+(obj.name)+'</p></li>';
+                                $listContentUl.append($li);
+                            });
+
+                        },
+                        error : function (err) {
+                            console.log(err);
+                        }
+                    });
+                }
+                
+                function bind() {  //事件
+                    /*$listTitle.on(touchstart,function(){
+                        window.location = myUrl;
+                    });*/
+
+                }
+
+                return {
+                    init : init
+                }
+            }) ();
 
             init();
         });
@@ -46,13 +104,13 @@
 <body>
     <div id="main">
         <div id="musicList">
-            <div class="list_title">音乐播放器<span class="list_tip"></span></div>
+            <div id="listTitle" class="list_title">音乐播放器<span class="list_tip"></span></div>
             <div class="list_content">
-                <ul>
-                    <li>
+                <ul id="listContentUl">
+                    <!--<li>
                         <h3 class="title">See You Again</h3>
                         <p class="name">Wiz Khalifa/Charlie Puth</p>
-                    </li>
+                    </li>-->
                 </ul>
             </div>
             <div class="list_audio">
