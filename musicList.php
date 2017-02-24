@@ -2,7 +2,7 @@
 
     require_once('connect.php');
 
-    $sql = "select name , musicName from music_list";
+    $sql = "select id , name , musicName from music_list";
 
     $query = mysql_query($sql);
 
@@ -13,4 +13,4 @@
         echo json_encode($data);
     }
 
-?>
+  ?>
