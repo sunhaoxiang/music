@@ -34,7 +34,10 @@
         #musicDetails .details_title { width: 100%; height: 40px; background: rgba(41,171,226,0.6); font-size: 16px; line-height: 40px; text-align: center; color: #fff; position: absolute; top: 0;}
         #musicDetails .details_name span { font-size: 12px; padding-left: 10px;}
         #musicDetails .details_tip { width: 19px; height: 10px; background: url(img/details_arrow.png) no-repeat; background-size: cover; position: absolute; right: 15px; top: 15px;}
-        #musicDetails .details_lyric {}
+        #musicDetails .details_lyric { width: 100%; position: absolute; top: 40px; bottom: 150px; overflow: hidden;}
+        #musicDetails .details_lyric ul { width: 100%; text-align: center; color: #fff; font-size: 14px; position: absolute; left: 0; top: 0; transition: .2s; -webkit-transition: .2s;}
+        #musicDetails .details_lyric li { margin-top: 15px;}
+        #musicDetails .details_lyric li.active { color: #00ffff;}
         #musicDetails .details_audio { width: 100%; height: 150px; position: absolute; bottom: 0;}
         #musicDetails .details_audioAll { width: 200px; margin: 20px auto; position: relative;}
         #musicDetails .details_audioPro { width: 100%; height: 2px; background: #fff;}
@@ -84,6 +87,8 @@
             var $detailsPlay = $('#detailsPlay');
             var $detailsPrev = $('#detailsPrev');
             var $detailsNext = $('#detailsNext');
+            var $detailsLyric = $('#detailsLyric');
+            var $detailsLyricUl = $('#detailsLyricUl');
 
             function init() {  //整个项目的初始化
                 device();
@@ -252,6 +257,11 @@
             }) ();
 
             var musicDetails = (function () {  //音乐详情页操作
+                var re = /\[[^[]+/g;
+                var arr = [];
+                var $li = null;
+                var iLiH = 0;
+
                 function init() {  //初始
                     $musicDetails.css('transform','translate3d(0,'+(viewHeight)+'px,0)');
                     bind();
@@ -274,12 +284,49 @@
                 
                 function show(sName,sMusicName,sLyric) {  //显示
                     $detailsName.html(sMusicName+'<span>'+sName+'</span>');
+                    $detailsLyricUl.empty().css('transform','translate3d(0,0,0)');
+                    arr = sLyric.match(re);
+
+                    for (var i = 0; i < arr.length; i++) {
+                        arr[i] = [formatTime(arr[i].substring(0,10)) , arr[i].substring(10).trim()];
+                    }
+
+                    for (var i = 0; i < arr.length; i++) {
+                        $detailsLyricUl.append('<li>'+arr[i][1]+'</li>');
+                    }
+
+                    $li = $detailsLyricUl.find('li');
+                    $li.first().attr('class','active');
+                    iLiH = $li.first().outerHeight(true);
+                }
+                
+                function formatTime(num) {  //格式化日期
+                    num = num.substring(1,num.length-1);
+                    var arr = num.split(':');
+                    return (parseFloat(arr[0]*60) + parseFloat(arr[1])).toFixed(2);
+                }
+                
+                function scrollLyric(ct) {  //滚动歌词
+                    for (var i = 0; i < arr.length; i++) {
+                        if (i != arr.length - 1 && ct > arr[i][0] && ct < arr[i+1][0]) {
+                            $li.eq(i).attr('class','active').siblings().attr('class','');
+                            if (i > 3) {
+                                $detailsLyricUl.css('transform','translate3d(0,'+(-iLiH*(i-3))+'px,0)');
+                            } else {
+                                $detailsLyricUl.css('transform','translate3d(0,0,0)');
+                            }
+                        } else if (i == arr.length - 1 && ct > arr[i][0]) {
+                            $li.eq(i).attr('class','active').siblings().attr('class','');
+                            $detailsLyricUl.css('transform','translate3d(0,'+(-iLiH*(i-3))+'px,0)');
+                        }
+                    }
                 }
 
                 return {
                     init : init,
                     slideUp : slideUp,
-                    show : show
+                    show : show,
+                    scrollLyric : scrollLyric
                 }
                 
             }) ();
@@ -421,6 +468,7 @@
                     $detailsNowTime.html( formatTime(oAudio.currentTime) );
                     $detailsAudioProUp.css('width',scale * 100 + '%');
                     $detailsAudioProBar.css('left',scale * 100 + '%');
+                    musicDetails.scrollLyric(oAudio.currentTime);
                 }
 
                 function next() {  //下一首歌
@@ -475,7 +523,14 @@
                 <div id="detailsName" class="details_name"><!--See You Again<span>Wiz Khalifa/Charlie Puth</span>--></div>
                 <span class="details_tip"></span>
             </div>
-            <div class="details_lyric"></div>
+            <div id="detailsLyric" class="details_lyric">
+                <ul id="detailsLyricUl">
+                    <!--<li>歌词测试文字</li>
+                    <li class="active">歌词测试文字</li>
+                    <li>歌词测试文字</li>
+                    <li>歌词测试文字</li>-->
+                </ul>
+            </div>
             <div class="details_audio">
                 <div class="details_audioAll">
                     <div class="details_audioPro">
