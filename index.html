@@ -62,6 +62,7 @@
             var touchmove = 'touchmove';
             var touchend = 'touchend';
             var id = 0;
+            var index = 0;
             var oAudio = $('#audio1').get(0);
 
             var $main = $('#main');
@@ -152,6 +153,7 @@
                             $(this).attr('class','active').siblings().attr('class','');
                             id = $(this).attr('musicId');
                             musicAudio.loadMusic(id);
+                            index = $(this).index();
                         }
                     });
 
@@ -284,6 +286,11 @@
 
             var musicAudio = (function () {  //音乐播放器操作
                 var onoff = true;
+                var timer = null;
+                var scale = 0;
+                var disX = 0;
+                var parentW = $detailsAudioProBar.parent().width();
+
                 function init() {  //初始
                     bind();
                 }
@@ -313,11 +320,15 @@
                     musicList.show(sName,sMusicName,sImg);
                     musicDetails.show(sName,sMusicName,sLyric);
                     oAudio.src = 'img/'+sAudio;
-                    $(oAudio).on('canplaythrough',function () {
+
+                    $(oAudio).one('canplaythrough',function () {
                         play();
                         $detailsAllTime.html( formatTime(oAudio.duration) );
                     });
 
+                    $(oAudio).one('ended',function () {
+                        next();
+                    });
                 }
                 
                 function play() {  //播放
@@ -326,6 +337,9 @@
                     $listAudioBtn.css('backgroundImage','url(img/list_audioPause.png)');
                     $detailsPlay.css('backgroundImage','url(img/details_pause.png)');
                     oAudio.play();
+                    playing();
+                    clearInterval(timer);
+                    timer = setInterval(playing,1000);
                 }
                 
                 function pause() {  //暂停
@@ -334,6 +348,7 @@
                     $listAudioBtn.css('backgroundImage','url(img/list_audioPlay.png)');
                     $detailsPlay.css('backgroundImage','url(img/details_play.png)');
                     oAudio.pause();
+                    clearInterval(timer);
                 }
                 
                 function bind() {  //事件
@@ -345,6 +360,45 @@
                         }
                         return false;
                     });
+
+                    $detailsAudioProBar.on(touchstart,function (ev) {
+                        var touch = ev.originalEvent.changedTouches ? ev.originalEvent.changedTouches[0] : ev;
+                        var This = this;
+                        disX = touch.pageX - $(this).position().left;
+                        clearInterval(timer);
+
+                        $(document).on(touchmove+'.move',function (ev) {
+                            var touch = ev.originalEvent.changedTouches ? ev.originalEvent.changedTouches[0] : ev;
+                            var L = touch.pageX - disX;
+
+                            if (L <= 0) {
+                                L = 0;
+                            } else if (L > parentW) {
+                                L = parentW;
+                            }
+
+                            $(This).css('left',L);
+                            scale = L / parentW;
+                        });
+
+                        $(document).on(touchend+'.move',function () {
+                            $(this).off('.move');
+                            oAudio.currentTime = scale * oAudio.duration;
+                            playing();
+                            clearInterval(timer);
+                            timer = setInterval(playing,1000);
+                        });
+
+                        return false;
+                    });
+
+                    $detailsPrev.on(touchstart,function () {
+                        prev();
+                    });
+
+                    $detailsNext.on(touchstart,function () {
+                        next();
+                    });
                 }
 
                 function formatTime(num) {  //时间格式化
@@ -354,17 +408,36 @@
                     return toZero(iM) + ':' + toZero(iS);
                }
 
-               function toZero(num) {  //补零
-                   if (num < 10) {
-                       return '0'+num;
-                   } else {
-                       return ''+num;
-                   }
-               }
+                function toZero(num) {  //补零
+                    if (num < 10) {
+                        return '0'+num;
+                    } else {
+                        return ''+num;
+                    }
+                }
                
-               function playing() {  //播放进行中
+                function playing() {  //播放进行中
+                    scale = oAudio.currentTime / oAudio.duration;
+                    $detailsNowTime.html( formatTime(oAudio.currentTime) );
+                    $detailsAudioProUp.css('width',scale * 100 + '%');
+                    $detailsAudioProBar.css('left',scale * 100 + '%');
+                }
 
-               }
+                function next() {  //下一首歌
+                    var $li = $listContentUl.find('li');
+                    index = index == $li.length - 1 ? 0 : index + 1;
+                    id = $li.eq(index).attr('musicId');
+                    $li.eq(index).attr('class','active').siblings().attr('class','');
+                    loadMusic(id);
+                }
+
+                function prev() {  //上一首歌
+                    var $li = $listContentUl.find('li');
+                    index = index == 0 ? $li.length - 1 : index - 1;
+                    id = $li.eq(index).attr('musicId');
+                    $li.eq(index).attr('class','active').siblings().attr('class','');//.
+                    loadMusic(id);
+                }
 
                 return {
                     init : init,
