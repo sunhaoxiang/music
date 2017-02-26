@@ -1,0 +1,45 @@
+* { margin: 0; padding: 0;}
+html { width: 100%; height: 100%; overflow: hidden;}
+body { width: 100%; height: 100%; font: 14px/1.5 Tahoma,Arial,Roboto,"Droid Sans","Helvetica Neue","Droid Sans Fallback","Heiti SC",sans-self;}
+li { list-style: none;}
+#main { width: 100%; height: 100%; position: relative; margin: 0 auto;}
+#musicList { width: 100%; height: 100%; background: url(img/bg.jpg) no-repeat; background-size: cover;}
+#musicList .list_title { width: 100%; height: 40px; background: rgba(41,171,226,0.6); font-size: 20px; line-height: 40px; text-align: center; color: #fff; position: absolute; top: 0;}
+#musicList .list_tip { width: 16px; height: 16px; background: url(img/tip.png) no-repeat; background-size: cover; position: absolute; right: 15px; top: 12px;}
+#musicList .list_content { width: 100%; position: absolute; top: 40px; bottom: 65px; overflow: hidden;}
+#musicList .list_content ul { width: 100%; position: absolute; top: 0; left: 0; transform: translate3d(0,0,0);}
+#musicList .list_content ul li { width: 100%; height: 60px; background: rgba(26,26,26,0.6); border-bottom: 1px solid #999; box-sizing: border-box;}
+#musicList .list_content ul li.active { border-left: 5px solid #29abe2;}
+#musicList .list_audio { width: 100%; height: 65px; background: url(img/list_audioBg.png) repeat-x; position: absolute; bottom: 0;}
+#musicList .list_audioImg { width: 50px; border-radius: 50%; float: left; margin: 7px 0 0 15px;}
+#musicList .list_audioImg.move { animation: 4s linear infinite audioImgMove; -webkit-animation: 4s linear infinite audioImgMove;}
+@keyframes audioImgMove {
+    0% { transform: rotate(0deg);}
+    100% { transform: rotate(360deg);}
+}
+@-webkit-keyframes audioImgMove {
+    0% { -webkit-transform: rotate(0deg);}
+    100% { -webkit-transform: rotate(360deg);}
+}
+#musicList .list_audioText { float: left;}
+#musicList .list_audioBtn { float: right; width: 32px; height: 32px; background: url(img/list_audioPlay.png) no-repeat; background-size: cover; margin: 16px 15px 0 0; display: none;}
+#musicDetails { width: 100%; height: 100%; background: url(img/detailsBg.jpg) no-repeat; background-size: cover; background-position: bottom; position: absolute; top: 0; left: 0; z-index: 10;}
+#musicDetails .details_title { width: 100%; height: 40px; background: rgba(41,171,226,0.6); font-size: 16px; line-height: 40px; text-align: center; color: #fff; position: absolute; top: 0;}
+#musicDetails .details_name span { font-size: 12px; padding-left: 10px;}
+#musicDetails .details_tip { width: 19px; height: 10px; background: url(img/details_arrow.png) no-repeat; background-size: cover; position: absolute; right: 15px; top: 15px;}
+#musicDetails .details_lyric { width: 100%; position: absolute; top: 40px; bottom: 150px; overflow: hidden;}
+#musicDetails .details_lyric ul { width: 100%; text-align: center; color: #fff; font-size: 14px; position: absolute; left: 0; top: 0; transition: .2s; -webkit-transition: .2s;}
+#musicDetails .details_lyric li { margin-top: 15px;}
+#musicDetails .details_lyric li.active { color: #00ffff;}
+#musicDetails .details_audio { width: 100%; height: 150px; position: absolute; bottom: 0;}
+#musicDetails .details_audioAll { width: 200px; margin: 20px auto; position: relative;}
+#musicDetails .details_audioPro { width: 100%; height: 2px; background: #fff;}
+#musicDetails .details_audioProUp { width: 0; height: 2px; background: #29abe2; position: absolute; left: 0; top: 0;}
+#musicDetails .details_audioProBar { width: 15px; height: 15px; background: #29abe2; border-radius: 50%; position: absolute; left: 0; top: 0; margin: -7px;}
+#musicDetails .details_nowTime { font-size: 12px; color: #b3b3b3; position: absolute; top: -8px; left: -40px;}
+#musicDetails .details_allTime { font-size: 12px; color: #b3b3b3; position: absolute; top: -8px; right: -40px;}
+#musicDetails .details_play { width: 55px; height: 55px; background: url(img/details_play.png) no-repeat; background-size: cover; position: absolute; left: 50%; margin-left: -27px; top: 30px;}
+#musicDetails .details_prev { width: 37px; height: 37px; background: url(img/details_prev.png) no-repeat; background-size: cover; position: absolute; left: 10px; top: 37px;}
+#musicDetails .details_next { width: 37px; height: 37px; background: url(img/details_next.png) no-repeat; background-size: cover; position: absolute; right: 10px; top: 37px;}
+.title { color: #fff; font-size: 15px; padding: 10px 0 0 20px;}
+.name { color: #b3b3b3; font-size: 13px; padding: 2px 0 0 20px;}
