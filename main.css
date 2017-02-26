@@ -41,5 +41,31 @@ li { list-style: none;}
 #musicDetails .details_play { width: 55px; height: 55px; background: url(img/details_play.png) no-repeat; background-size: cover; position: absolute; left: 50%; margin-left: -27px; top: 30px;}
 #musicDetails .details_prev { width: 37px; height: 37px; background: url(img/details_prev.png) no-repeat; background-size: cover; position: absolute; left: 10px; top: 37px;}
 #musicDetails .details_next { width: 37px; height: 37px; background: url(img/details_next.png) no-repeat; background-size: cover; position: absolute; right: 10px; top: 37px;}
+#loading { width: 100%; height: 100%; background: #000; position: absolute; left: 0; top: 0; z-index: 20; overflow: hidden;}
+#loading .content1, #loading .content2 { width: 30px; height: 30px; position: absolute; left: 50%; top: 50%; margin: -15px;}
+#loading .content1 div, #loading .content2 div { width: 8px; height: 8px; background: #fff; position: absolute; border-radius: 50%; animation: 2s linear infinite loadingMove; -webkit-animation: 2s linear infinite loadingMove;}
+#loading .content1 .arc1, #loading .content2 .arc1 { left: 0; top: 0;}
+#loading .content1 .arc2, #loading .content2 .arc2 { right: 0; top: 0;}
+#loading .content1 .arc3, #loading .content2 .arc3 { right: 0; bottom: 0;}
+#loading .content1 .arc4, #loading .content2 .arc4 { left: 0; bottom: 0;}
+#loading .content2 { transform: rotate(45deg); -webkit-transform: rotate(45deg);}
+@keyframes loadingMove {
+    0%{ transform: scale(1);}
+    50%{ transform: scale(0);}
+    100%{ transform: scale(1);}
+}
+@-webkit-keyframes loadingMove {
+    0%{ -webkit-transform: scale(1);}
+    50%{ -webkit-transform: scale(0);}
+    100%{ -webkit-transform: scale(1);}
+}
+#loading .content1 .arc1 { animation-delay: -1.5s;}
+#loading .content2 .arc1 { animation-delay: -1.3s;}
+#loading .content1 .arc2 { animation-delay: -1.1s;}
+#loading .content2 .arc2 { animation-delay: -0.9s;}
+#loading .content1 .arc3 { animation-delay: -0.7s;}
+#loading .content2 .arc3 { animation-delay: -0.5s;}
+#loading .content1 .arc4 { animation-delay: -0.3s;}
+#loading .content2 .arc4 { animation-delay: -0.1s;}
 .title { color: #fff; font-size: 15px; padding: 10px 0 0 20px;}
 .name { color: #b3b3b3; font-size: 13px; padding: 2px 0 0 20px;}

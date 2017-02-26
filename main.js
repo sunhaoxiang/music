@@ -8,6 +8,7 @@ $(function () {
     var id = 0;
     var index = 0;
     var oAudio = $('#audio1').get(0);
+    var $loading = $('#loading');
 
     var $main = $('#main');
     var $listContent = $('#listContent');
@@ -32,10 +33,33 @@ $(function () {
     var $detailsLyricUl = $('#detailsLyricUl');
 
     function init() {  //整个项目的初始化
+        loadingFn();
         device();
         musicList.init();
         musicDetails.init();
         musicAudio.init();
+    }
+    
+    function loadingFn() {  //加载效果
+        var arr = ['bg.jpg','detailsBg.jpg','details_pause.png','details_play.png','details_next.png','details_prev.png','list_audioBg.png','logo.jpg'];
+        var iNum = 0;
+        $.each(arr,function (i, img) {
+            var objImg = new Image();
+            objImg.onload = function () {
+                iNum++;
+                if (iNum == arr.length) {
+                    $loading.animate({opacity:0},700,function () {
+                        $(this).remove();
+                    });
+                }
+            };
+            objImg.onerror = function () {
+                $loading.animate({opacity:0},700,function () {
+                    $(this).remove();
+                });
+            };
+            objImg.src = 'img/' + img;
+        });
     }
 
     function device() {  //兼容PC和移动端
